@@ -12,7 +12,7 @@ def home(request):
     # print(lusch)
     return render(request, "chat.html", {"userschat": chsud, "lchsd": lusch})
 
-def chat(request):
+def chatt(request):
     if request.method == "POST":
         user = request.user
         userch = request.POST["user_chatter"]
