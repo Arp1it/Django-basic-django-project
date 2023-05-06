@@ -1,0 +1,37 @@
+{% extends 'index.html' %}
+
+{% block bd %}
+
+<div class="container mb-5">
+{% for n in userschat %}
+    <div class="card" style="width: 33rem;">
+        <div class="card-body" id="{{n.cuser.username}}">
+            <h5 class="card-title">{{n.cuser.username}}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{n.timestamp}}</h6>
+            <p class="card-text">{{n.chattts}}</p>
+        </div>
+    </div>
+    <h4 class="row d-flex justify-content-center mt-2">h</h4>
+    {% endfor %}
+</div>
+<h4 class="row d-flex justify-content-center mt-1">h</h4>
+
+{% if user.is_authenticated %}
+<form method="post" action="/chat/#{{lchsd}}">{% csrf_token %}
+    <div class="container my-1 fixed-bottom bg-dark">
+        <label for="exampleFormControlInput1" class="form-label text-white">Your chat box here</label>
+        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="enter here"
+            name="user_chatter" maxlength="999999">
+        <button class="btn btn-primary btn-sm my-1"> Send </button>
+    </div>
+</form>
+
+{% else %}
+<div class="container my-3 fixed-bottom">
+    <h3 class="row d-flex justify-content-center bg-danger text-white">Please login then sent message</h3>
+</div>
+
+{% endif %}
+
+
+{% endblock %}
