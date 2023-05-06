@@ -13,21 +13,24 @@
 
     <div>
 
-        <h1 class="row d-flex justify-content-center bg-success text-dark">Community Chatting</h1>
+        <div class="fixed-top mb-3">
+            <h1 class="row d-flex justify-content-center bg-success text-dark mx-1">Community Chatting</h1>
 
-        <!-- Button trigger modal -->
-        {% if user.is_authenticated %}
-        <a href="/user_logout/" class="btn btn-primary btn-sm mx-1">Logout</a>
-        {% else %}
-        <button type="button" class="btn btn-primary btn-sm mx-1" data-bs-toggle="modal" data-bs-target="#signModal">
-            Signin
-        </button>
+            <!-- Button trigger modal -->
+            {% if user.is_authenticated %}
+            <a href="/user_logout/" class="btn btn-primary btn-sm mx-1 float-right">Logout</a>
+            {% else %}
+            <button type="button" class="btn btn-primary btn-sm mx-2" data-bs-toggle="modal"
+                data-bs-target="#signModal">
+                Signin
+            </button>
 
-        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#loginModal">
-            Login
-        </button>
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#loginModal">
+                Login
+            </button>
 
-        {% endif %}
+            {% endif %}
+        </div>
 
         <!-- Modal for signin -->
         <div class="modal fade" id="signModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
