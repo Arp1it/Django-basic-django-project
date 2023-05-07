@@ -3,51 +3,71 @@
 {% block bd %}
 
 <div class="container my-5">
-{% for n in userschat %}
+    {% for n in userschat %}
     {% if request.user.username == n.cuser.username %}
     <div class="card" style="width: 33rem; margin-left: 570px;">
-        
-    {% else %}
-    <div class="card" style="width: 33rem; margin-left: 10px;">
-        
-    {% endif %}
-        <div class="card-body" id="{{n.cuser.username}}">
-            <h5 class="card-title">{{n.cuser.username}}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">{{n.timestamp}}
-            {% if request.user.username == n.cuser.username %}
-                <b>(You)</b>
+
+        {% else %}
+        <div class="card" style="width: 33rem; margin-left: 10px;">
+
             {% endif %}
-            </h6>
-            <p class="card-text">{{n.chattts}}</p>
+            <div class="card-body" id="{{n.cuser.username}}">
+                <h5 class="card-title">{{n.cuser.username}}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{n.timestamp}}
+                    {% if request.user.username == n.cuser.username %}
+                    <b>(You)</b>
+                    {% endif %}
+                </h6>
+                <p class="card-text">{{n.chattts}}</p>
+
+                <button class="btn btn-primary btn-sm" id="button" onclick="t({{forloop.counter}})">
+                        Reply
+                    </button>
+                <div id="d{{forloop.counter}}" hidden class="my-1 sh">
+                    <form action="/chatt/" method="post">{% csrf_token %}
+                        <input type="text" name="user_chatter">
+                        <input type="text" name="r" value="{{n.id}}" hidden>
+                        <button class="btn btn-sm btn-primary" type="submit">reply</button>
+                    </form>
+                </div>
+
+            </div>
         </div>
+        <h4 class="row d-flex justify-content-center mt-2 mx-2">h</h4>
+        {% endfor %}
     </div>
-    <h4 class="row d-flex justify-content-center mt-2 mx-2">h</h4>
-    {% endfor %}
-</div>
-<h4 class="row d-flex justify-content-center mt-1 mx-2">h</h4>
+    <h4 class="row d-flex justify-content-center mt-1 mx-2">h</h4>
 
-{% if user.is_authenticated %}
-<form method="post" action="/chatt/#{{lchsd}}" id="tip">{% csrf_token %}
-    <div class="container mt-1 fixed-bottom bg-dark">
-        <label for="exampleFormControlInput1" class="form-label text-white">Your chat box here</label>
-        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="enter here" name="user_chatter" maxlength="999999" id="user_chatter">
-        <button class="btn btn-primary btn-sm my-1"> Send </button>
+    {% if user.is_authenticated %}
+    <form method="post" action="/chatt/#{{lchsd}}" id="tip">{% csrf_token %}
+        <div class="container mt-1 fixed-bottom bg-dark">
+            <label for="exampleFormControlInput1" class="form-label text-white">Your chat box here</label>
+            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="enter here"
+                name="user_chatter" maxlength="999999" id="user_chatter">
+                <input type="text" name="r" value="" hidden>
+            <button class="btn btn-primary btn-sm my-1"> Send </button>
+        </div>
+    </form>
+
+    {% else %}
+    <div class="container my-3 fixed-bottom">
+        <h3 class="row d-flex justify-content-center bg-danger text-white">Please login then sent message</h3>
     </div>
-</form>
 
-{% else %}
-<div class="container my-3 fixed-bottom">
-    <h3 class="row d-flex justify-content-center bg-danger text-white">Please login then sent message</h3>
-</div>
-
-{% endif %}
+    {% endif %}
 
 
-{% endblock %}
+    {% endblock %}
 
-{% block jsv %}
-<script>
-    // In the future i added ajax here
-</script>
+    {% block jsv %}
+    <script>
+        // In the future i added ajax here
 
-{% endblock %}
+    const t = (counter) => {
+        document.getElementById(`d${counter}`).toggleAttribute("hidden");
+    }
+
+
+    </script>
+
+    {% endblock %}

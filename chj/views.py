@@ -16,9 +16,20 @@ def chatt(request):
     if request.method == "POST":
         user = request.user
         userch = request.POST["user_chatter"]
+        userre = request.POST["r"]
 
-        chsu = Chatting(cuser=user, chattts=userch)
-        chsu.save()
+        if userch == "":
+            return redirect("/")
+
+        if userre == "":
+            chsu = Chatting(cuser=user, chattts=userch)
+            chsu.save()
+
+        else:
+            parrent = Chatting.objects.get(id=userre)
+            chsu = Chatting(cuser=user, chattts=userch, cusrep=parrent)
+            chsu.save()
+
     return redirect("/")
 
 def user_signin(request):
