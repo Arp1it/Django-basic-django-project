@@ -15,19 +15,21 @@ def home(request):
 def chatt(request):
     if request.method == "POST":
         user = request.user
-        userch = request.POST["user_chatter"]
+        userch = request.POST.get("user_chatter")
         userre = request.POST["r"]
+        usretarg = request.POST.get("rtarget")
+        # print(usretarg, userre)
 
-        if userch == "":
+        if not userch:
             return redirect("/")
 
-        if userre == "":
+        if not userre or not usretarg:
             chsu = Chatting(cuser=user, chattts=userch)
             chsu.save()
 
         else:
             parrent = Chatting.objects.get(id=userre)
-            chsu = Chatting(cuser=user, chattts=userch, cusrep=parrent)
+            chsu = Chatting(cuser=user, chattts=userch, cusrep=parrent, useridhtml=usretarg)
             chsu.save()
 
     return redirect("/")

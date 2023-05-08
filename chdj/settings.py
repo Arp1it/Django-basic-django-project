@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
 EXTERNAL_APPS = [
     "chj",
+    "mathfilters",
 ]
 
 INSTALLED_APPS = INSTALLED_APPS + EXTERNAL_APPS

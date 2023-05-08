@@ -2,6 +2,10 @@
 
 {% block bd %}
 
+{% load mathfilters %}
+
+<p id="h">h</p>
+
 <div class="container my-5">
     {% for n in userschat %}
     {% if request.user.username == n.cuser.username %}
@@ -12,21 +16,31 @@
 
             {% endif %}
             <div class="card-body" id="{{n.cuser.username}}">
-                <h5 class="card-title">{{n.cuser.username}}</h5>
+                <h5 class="card-title" id="ld{{forloop.counter}}">{{n.cuser.username}}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">{{n.timestamp}}
                     {% if request.user.username == n.cuser.username %}
                     <b>(You)</b>
                     {% endif %}
                 </h6>
+                {% if n.cusrep %}
+                <h6 class="card-subtitle mb-2 text-muted">reply of
+                <a {% if n.useridhtml == "1" %}
+                    href="#h"
+                {% else %}
+                    href="#ld{{n.useridhtml|sub:1}}"
+                {% endif %} >{{n.cusrep}}</a></h6>
+
+                {% endif %}
                 <p class="card-text">{{n.chattts}}</p>
 
                 <button class="btn btn-primary btn-sm" id="button" onclick="t({{forloop.counter}})">
-                        Reply
-                    </button>
+                    Reply
+                </button>
                 <div id="d{{forloop.counter}}" hidden class="my-1 sh">
                     <form action="/chatt/" method="post">{% csrf_token %}
                         <input type="text" name="user_chatter">
                         <input type="text" name="r" value="{{n.id}}" hidden>
+                        <input type="text" name="rtarget" value="{{forloop.counter}}" hidden>
                         <button class="btn btn-sm btn-primary" type="submit">reply</button>
                     </form>
                 </div>
@@ -44,30 +58,47 @@
             <label for="exampleFormControlInput1" class="form-label text-white">Your chat box here</label>
             <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="enter here"
                 name="user_chatter" maxlength="999999" id="user_chatter">
-                <input type="text" name="r" value="" hidden>
+            <input type="text" name="r" value="" id="r" hidden>
             <button class="btn btn-primary btn-sm my-1"> Send </button>
         </div>
     </form>
+</div>
 
-    {% else %}
-    <div class="container my-3 fixed-bottom">
-        <h3 class="row d-flex justify-content-center bg-danger text-white">Please login then sent message</h3>
-    </div>
+{% else %}
+<div class="container my-3 fixed-bottom">
+    <h3 class="row d-flex justify-content-center bg-danger text-white">Please login then sent message</h3>
+</div>
 
-    {% endif %}
+{% endif %}
 
 
-    {% endblock %}
+{% endblock %}
 
-    {% block jsv %}
-    <script>
-        // In the future i added ajax here
+{% block jsv %}
+<script>
+    // $(document).submit(function (e) {
+    //     e.preventDefault();
+    //     $.ajax({
+    //         url: '/chatt/',
+    //         type: 'POST',
+    //         data:
+    //         {
+    //             user_chatter: $('#user_chatter').val(),
+    //             r: $('#r').val(),
+    //             csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+    //         },
+    //         // success: function (msg) {
+
+    //         //     alert("data");
+    //         // }
+    //     });
+    // });     
 
     const t = (counter) => {
         document.getElementById(`d${counter}`).toggleAttribute("hidden");
     }
 
 
-    </script>
+</script>
 
-    {% endblock %}
+{% endblock %}
