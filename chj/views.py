@@ -10,6 +10,8 @@ def home(request):
     chsud = Chatting.objects.order_by("timestamp")
     lusch = Chatting.objects.last()
     # print(lusch)
+    # room_name = ""
+    # return render(request, "chat.html", {"userschat": chsud, "lchsd": lusch, "room_name": room_name})
     return render(request, "chat.html", {"userschat": chsud, "lchsd": lusch})
 
 def chatt(request):

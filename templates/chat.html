@@ -9,7 +9,7 @@
 <div class="container my-5">
     {% for n in userschat %}
     {% if request.user.username == n.cuser.username %}
-    <div class="card" style="width: 33rem; margin-left: 570px;">
+    <div class="card" id="chat-log" style="width: 33rem; margin-left: 570px;">
 
         {% else %}
         <div class="card" style="width: 33rem; margin-left: 10px;">
@@ -55,11 +55,11 @@
     {% if user.is_authenticated %}
     <form method="post" action="/chatt/#{{lchsd}}" id="tip">{% csrf_token %}
         <div class="container mt-1 fixed-bottom bg-dark">
-            <label for="exampleFormControlInput1" class="form-label text-white">Your chat box here</label>
-            <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="enter here"
-                name="user_chatter" maxlength="999999" id="user_chatter">
+            <label for="chat-message-input" class="form-label text-white">Your chat box here</label>
+            <input type="text" class="form-control" placeholder="enter here"
+                name="user_chatter" maxlength="999999" id="chat-message-input">
             <input type="text" name="r" value="" id="r" hidden>
-            <button class="btn btn-primary btn-sm my-1"> Send </button>
+            <input class="btn btn-primary btn-sm my-1" id="chat-message-submit" type="button" value="Send">
         </div>
     </form>
 </div>
@@ -97,6 +97,46 @@
     const t = (counter) => {
         document.getElementById(`d${counter}`).toggleAttribute("hidden");
     }
+
+
+    // const roomName = JSON.parse(document.getElementById('room-name').textContent);
+
+    // const chatSocket = new WebSocket('ws://localhost:8000/')
+
+
+    //     // const chatSocket = new WebSocket(
+    //     //     'ws://'
+    //     //     // + window.location.host
+    //     //     + 8080
+    //     //     + '/ws/'
+    //     //     // + roomName
+    //     //     // + '/'
+    //     // );
+
+    //     chatSocket.onmessage = function(e) {
+    //         const data = JSON.parse(e.data);
+    //         document.querySelector('#chat-log').value += (data.message + '\n');
+    //     };
+
+    //     chatSocket.onclose = function(e) {
+    //         console.error('Chat socket closed unexpectedly', e);
+    //     };
+
+    //     document.querySelector('#chat-message-input').focus();
+    //     document.querySelector('#chat-message-input').onkeyup = function(e) {
+    //         if (e.keyCode === 13) {  // enter, return
+    //             document.querySelector('#chat-message-submit').click();
+    //         }
+    //     };
+
+    //     document.querySelector('#chat-message-submit').onclick = function(e) {
+    //         const messageInputDom = document.querySelector('#chat-message-input');
+    //         const message = messageInputDom.value;
+    //         chatSocket.send(JSON.stringify({
+    //             'message': message
+    //         }));
+    //         messageInputDom.value = '';
+    //     };
 
 
 </script>

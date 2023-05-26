@@ -14,9 +14,11 @@
         }
         window.onload = toBottom;
     </script>
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
 </head>
 
-<body class="bg-dark">
+<body hx-ext="ws" ws-connect="/ws/" class="bg-dark">
 
     <div>
 
