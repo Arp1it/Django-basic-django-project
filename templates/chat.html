@@ -6,7 +6,7 @@
 
 <p id="h">h</p>
 
-<div class="container my-5">
+<div class="container my-5" id="chat" hx-swap-oob="beforeend">
     {% for n in userschat %}
     {% if request.user.username == n.cuser.username %}
     <div class="card" id="chat-log" style="width: 33rem; margin-left: 570px;">
@@ -17,6 +17,7 @@
             {% endif %}
             <div class="card-body" id="{{n.cuser.username}}">
                 <h5 class="card-title" id="ld{{forloop.counter}}">{{n.cuser.username}}</h5>
+                <h5 class="card-title" id="chat">{{username}}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">{{n.timestamp}}
                     {% if request.user.username == n.cuser.username %}
                     <b>(You)</b>
@@ -59,7 +60,8 @@
             <input type="text" class="form-control" placeholder="enter here"
                 name="user_chatter" maxlength="999999" id="chat-message-input">
             <input type="text" name="r" value="" id="r" hidden>
-            <input class="btn btn-primary btn-sm my-1" id="chat-message-submit" type="button" value="Send">
+            <!-- <input class="btn btn-primary btn-sm my-1" id="chat-message-submit" type="button" value="Send"> -->
+            <button type="submit" class="btn btn-primary">Send</button>
         </div>
     </form>
 </div>
