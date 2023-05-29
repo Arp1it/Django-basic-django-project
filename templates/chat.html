@@ -6,7 +6,8 @@
 
 <p id="h">h</p>
 
-<div class="container my-5" id="chat" hx-swap-oob="beforeend">
+<!-- <div class="container my-5" id="chat" hx-swap-oob="beforeend"> -->
+<div class="container my-5">
     {% for n in userschat %}
     {% if request.user.username == n.cuser.username %}
     <div class="card" id="chat-log" style="width: 33rem; margin-left: 570px;">
@@ -50,20 +51,21 @@
         </div>
         <h4 class="row d-flex justify-content-center mt-2 mx-2">h</h4>
         {% endfor %}
+        <div class="card" style="width: 33rem; margin-left: 10px;" id="cchh"></div>
+        <h4 class="row d-flex justify-content-center mt-2 mx-2">h</h4>
     </div>
     <h4 class="row d-flex justify-content-center mt-1 mx-2">h</h4>
 
     {% if user.is_authenticated %}
-    <form method="post" action="/chatt/#{{lchsd}}" id="tip">{% csrf_token %}
+    <!-- <form method="post" action="/chatt/#{{lchsd}}" id="tip">{% csrf_token %} -->
         <div class="container mt-1 fixed-bottom bg-dark">
             <label for="chat-message-input" class="form-label text-white">Your chat box here</label>
-            <input type="text" class="form-control" placeholder="enter here"
-                name="user_chatter" maxlength="999999" id="chat-message-input">
+            <input type="text" class="form-control" placeholder="enter here" name="user_chatter" maxlength="999999"  id="messagee">
             <input type="text" name="r" value="" id="r" hidden>
             <!-- <input class="btn btn-primary btn-sm my-1" id="chat-message-submit" type="button" value="Send"> -->
-            <button type="submit" class="btn btn-primary">Send</button>
+            <button type="submit" class="btn btn-primary" onclick="sendMessage()">Send</button>
         </div>
-    </form>
+    <!-- </form> -->
 </div>
 
 {% else %}
@@ -103,42 +105,47 @@
 
     // const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
-    // const chatSocket = new WebSocket('ws://localhost:8000/')
+    let url = "ws://localhost:8000/ws/"
+    let sender = "{{main_user}}"
 
+    let wbsocket = new WebSocket(url)
 
-    //     // const chatSocket = new WebSocket(
-    //     //     'ws://'
-    //     //     // + window.location.host
-    //     //     + 8080
-    //     //     + '/ws/'
-    //     //     // + roomName
-    //     //     // + '/'
-    //     // );
+    wbsocket.onopen = function(e){
+        console.log("connected")
+    }
 
-    //     chatSocket.onmessage = function(e) {
-    //         const data = JSON.parse(e.data);
-    //         document.querySelector('#chat-log').value += (data.message + '\n');
-    //     };
+    wbsocket.onmessage = function(e){
+        console.log(e.data)
 
-    //     chatSocket.onclose = function(e) {
-    //         console.error('Chat socket closed unexpectedly', e);
-    //     };
+        let daata = JSON.parse(e.data)
+        console.log(daata)
 
-    //     document.querySelector('#chat-message-input').focus();
-    //     document.querySelector('#chat-message-input').onkeyup = function(e) {
-    //         if (e.keyCode === 13) {  // enter, return
-    //             document.querySelector('#chat-message-submit').click();
-    //         }
-    //     };
+        if (daata.payload.message){
+            updateUI(daata.payload.message, daata.payload.sender)
+        }
+    }
 
-    //     document.querySelector('#chat-message-submit').onclick = function(e) {
-    //         const messageInputDom = document.querySelector('#chat-message-input');
-    //         const message = messageInputDom.value;
-    //         chatSocket.send(JSON.stringify({
-    //             'message': message
-    //         }));
-    //         messageInputDom.value = '';
-    //     };
+    wbsocket.onclose = function(e){
+        console.log("disconnected")
+    }
+
+    function updateUI(message, sender){
+        var html = ` <div class="card-body">
+                <h5 class="card-title">${sender}</h5>
+                <h5 class="card-title" id="chat">{{username}}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{n.timestamp}}
+                <p class="card-text">${message}</p>
+            </div>`
+        document.getElementById("cchh").innerHTML += html
+    }
+
+    function sendMessage(){
+
+        let message = document.getElementById("messagee").value
+
+        wbsocket.send(JSON.stringify({'message': message, "sender":sender}))
+        document.getElementById("messagee").value = ''
+    }
 
 
 </script>

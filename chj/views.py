@@ -12,7 +12,8 @@ def home(request):
     # print(lusch)
     # room_name = ""
     # return render(request, "chat.html", {"userschat": chsud, "lchsd": lusch, "room_name": room_name})
-    return render(request, "chat.html", {"userschat": chsud, "lchsd": lusch})
+    userr = request.user
+    return render(request, "chat.html", {"userschat": chsud, "lchsd": lusch, "main_user":userr})
 
 def chatt(request):
     if request.method == "POST":

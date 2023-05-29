@@ -35,8 +35,9 @@ class ChatConsumer(WebsocketConsumer):
         # self.send(text_data=json.dumps(text_data))
         data = json.loads(text_data)
 
-        print(data)
+        # print(data)
         payload = {"message": data.get("message"), "sender": data.get("sender")}
+        print(payload)
 
         async_to_sync(self.channel_layer.group_send)(
             f"{self.GROUP_NAME}", {
@@ -46,14 +47,14 @@ class ChatConsumer(WebsocketConsumer):
         )
 
     def send_message(self, text_data):
-        data = text_data.get("value")
-        print(data)
+        dataa = json.loads(text_data.get("value"))
+        print(dataa)
 
-        self.send(text_data = json.dumps({"payload": data}))
+        self.send(text_data = json.dumps({"payload": dataa}))
 
-    def user_joined(self, event):
-        html = get_template("templates/chat.html").render(
-            context = {"username": event['text']}
-        )
-        print(html)
-        self.send(text_data=html)
+    # def user_joined(self, event):
+    #     html = get_template("templates/chat.html").render(
+    #         context = {"username": event['text']}
+    #     )
+    #     print(html)
+    #     self.send(text_data=html)
