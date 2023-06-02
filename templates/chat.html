@@ -51,7 +51,7 @@
         </div>
         <h4 class="row d-flex justify-content-center mt-2 mx-2">h</h4>
         {% endfor %}
-        <div class="card" style="width: 33rem; margin-left: 10px;" id="cchh"></div>
+        <div id="cchh"></div>
         <h4 class="row d-flex justify-content-center mt-2 mx-2">h</h4>
     </div>
     <h4 class="row d-flex justify-content-center mt-1 mx-2">h</h4>
@@ -130,20 +130,58 @@
     }
 
     function updateUI(message, sender){
-        var html = ` <div class="card-body">
+        const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        let a = new Date()
+        // console.log(a)
+        let b = a.getHours()
+        let c = a.getMinutes()
+        let d = a.getFullYear()
+        let e = monthNames[a.getMonth()]
+        let f = a.getDate()
+
+        var amPm = b >= 12 ? 'p.m.' : 'a.m.';
+
+        b = b>=12 ? Number.parseInt(b) - 12 : b
+
+        k = `${e} ${f}, ${d}, ${b}:${c} ${amPm}`
+
+        if(sender == "{{main_user}}"){
+        var html = `
+        <div class="card" style="width: 33rem; margin-left: 570px;">
+            <div class="card-body">
                 <h5 class="card-title">${sender}</h5>
                 <h5 class="card-title" id="chat">{{username}}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">{{n.timestamp}}
+                <h6 class="card-subtitle mb-2 text-muted">${k} <b>(You)</b></h6>
                 <p class="card-text">${message}</p>
-            </div>`
+            </div>
+        </div>
+            `
+        }
+
+        else{
+            var html = `
+        <div class="card" style="width: 33rem; margin-left: 10px;">
+            <div class="card-body">
+                <h5 class="card-title">${sender}</h5>
+                <h5 class="card-title" id="chat">{{username}}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">${k}</h6>
+                <p class="card-text">${message}</p>
+            </div>
+        </div>
+            `
+        }
+
         document.getElementById("cchh").innerHTML += html
     }
 
     function sendMessage(){
 
         let message = document.getElementById("messagee").value
+        let rr = document.getElementsByName("r").value
+        let rtargett = document.getElementsByName("rtarget").value
 
-        wbsocket.send(JSON.stringify({'message': message, "sender":sender}))
+        wbsocket.send(JSON.stringify({'message': message, "sender":sender, "r": rr, "rtarget": rtargett}))
         document.getElementById("messagee").value = ''
     }
 

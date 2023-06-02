@@ -4,6 +4,8 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
 from django.template.loader import get_template
+from .models import *
+from django.contrib.auth.models import User
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -34,9 +36,36 @@ class ChatConsumer(WebsocketConsumer):
         # print(text_data)
         # self.send(text_data=json.dumps(text_data))
         data = json.loads(text_data)
+        print(data)
 
-        # print(data)
-        payload = {"message": data.get("message"), "sender": data.get("sender")}
+        userch = data.get("message")
+        userr = User.objects.all()
+        user = ()
+        for i in userr:
+            # print(i)
+            # print(type(i))
+            if str(i) == data.get("sender"):
+                user = i
+        # print(user)
+        # print(type(user))
+
+        userre = data.get("r")
+        usretarg = data.get("rtarget")
+
+
+        if not userch:
+            return userch
+
+        if not userre or not usretarg:
+            chsu = Chatting(cuser=user, chattts=userch)
+            chsu.save()
+
+        else:
+            parrent = Chatting.objects.get(id=userre)
+            chsu = Chatting(cuser=user, chattts=userch, cusrep=parrent, useridhtml=usretarg)
+            chsu.save()
+        
+        payload = {"message": data.get("message"), "sender": data.get("sender"), "r": data.get("rr"), "rtarget": data.get("rtargett")}
         print(payload)
 
         async_to_sync(self.channel_layer.group_send)(
@@ -48,7 +77,7 @@ class ChatConsumer(WebsocketConsumer):
 
     def send_message(self, text_data):
         dataa = json.loads(text_data.get("value"))
-        print(dataa)
+        # print(dataa.get("r"))        
 
         self.send(text_data = json.dumps({"payload": dataa}))
 
