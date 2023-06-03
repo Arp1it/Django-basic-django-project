@@ -40,14 +40,7 @@ class ChatConsumer(WebsocketConsumer):
 
         userch = data.get("message")
         userr = User.objects.all()
-        user = ()
-        for i in userr:
-            # print(i)
-            # print(type(i))
-            if str(i) == data.get("sender"):
-                user = i
-        # print(user)
-        # print(type(user))
+        user = get_user_from_string(data.get("sender"))
 
         userre = data.get("r")
         usretarg = data.get("rtarget")
@@ -77,9 +70,15 @@ class ChatConsumer(WebsocketConsumer):
 
     def send_message(self, text_data):
         dataa = json.loads(text_data.get("value"))
-        # print(dataa.get("r"))        
+        # print(dataa.get("r"))  
 
-        self.send(text_data = json.dumps({"payload": dataa}))
+        lusch = Chatting.objects.last()
+        usert = get_user_from_string(lusch)
+
+        ll = Chatting.objects.filter(cuser=usert).last().id
+        # print(type(ll))      
+
+        self.send(text_data = json.dumps({"payload": dataa, "ll": ll}))
 
     # def user_joined(self, event):
     #     html = get_template("templates/chat.html").render(

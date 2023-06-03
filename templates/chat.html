@@ -17,7 +17,7 @@
 
             {% endif %}
             <div class="card-body" id="{{n.cuser.username}}">
-                <h5 class="card-title" id="ld{{forloop.counter}}">{{n.cuser.username}}</h5>
+                <h5 class="card-title" id="ld{{n.id}}">{{n.cuser.username}}</h5>
                 <h5 class="card-title" id="chat">{{username}}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">{{n.timestamp}}
                     {% if request.user.username == n.cuser.username %}
@@ -35,14 +35,14 @@
                 {% endif %}
                 <p class="card-text">{{n.chattts}}</p>
 
-                <button class="btn btn-primary btn-sm" id="button" onclick="t({{forloop.counter}})">
+                <button class="btn btn-primary btn-sm" id="button" onclick="t({{n.id}})">
                     Reply
                 </button>
-                <div id="d{{forloop.counter}}" hidden class="my-1 sh">
+                <div id="d{{n.id}}" hidden class="my-1 sh">
                     <form action="/chatt/" method="post">{% csrf_token %}
                         <input type="text" name="user_chatter">
                         <input type="text" name="r" value="{{n.id}}" hidden>
-                        <input type="text" name="rtarget" value="{{forloop.counter}}" hidden>
+                        <input type="text" name="rtarget" value="{{n.id}}" hidden>
                         <button class="btn btn-sm btn-primary" type="submit">reply</button>
                     </form>
                 </div>
@@ -121,7 +121,7 @@
         console.log(daata)
 
         if (daata.payload.message){
-            updateUI(daata.payload.message, daata.payload.sender)
+            updateUI(daata.payload.message, daata.payload.sender, daata.ll)
         }
     }
 
@@ -129,7 +129,7 @@
         console.log("disconnected")
     }
 
-    function updateUI(message, sender){
+    function updateUI(message, sender, iidd){
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
         let a = new Date()
@@ -148,12 +148,24 @@
 
         if(sender == "{{main_user}}"){
         var html = `
-        <div class="card" style="width: 33rem; margin-left: 570px;">
+        <div class="card mb-5" style="width: 33rem; margin-left: 570px;">
             <div class="card-body">
-                <h5 class="card-title">${sender}</h5>
+                <h5 class="card-title" id="ld${iidd}">${sender}</h5>
                 <h5 class="card-title" id="chat">{{username}}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">${k} <b>(You)</b></h6>
                 <p class="card-text">${message}</p>
+
+                <button class="btn btn-primary btn-sm" id="button" onclick="t(${iidd})">
+                    Reply
+                </button>
+                <div id="d${iidd}" hidden class="my-1 sh">
+                    <form action="/chatt/" method="post">{% csrf_token %}
+                        <input type="text" name="user_chatter">
+                        <input type="text" name="r" value="${iidd}" hidden>
+                        <input type="text" name="rtarget" value="${iidd}" hidden>
+                        <button class="btn btn-sm btn-primary" type="submit">reply</button>
+                    </form>
+                </div>
             </div>
         </div>
             `
@@ -161,12 +173,24 @@
 
         else{
             var html = `
-        <div class="card" style="width: 33rem; margin-left: 10px;">
+        <div class="card mb-5" style="width: 33rem; margin-left: 10px;">
             <div class="card-body">
-                <h5 class="card-title">${sender}</h5>
+                <h5 class="card-title" id="ld${iidd}">${sender}</h5>
                 <h5 class="card-title" id="chat">{{username}}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">${k}</h6>
                 <p class="card-text">${message}</p>
+
+                <button class="btn btn-primary btn-sm" id="button" onclick="t(${iidd})">
+                    Reply
+                </button>
+                <div id="d{{forloop.counter}}" hidden class="my-1 sh">
+                    <form action="/chatt/" method="post">{% csrf_token %}
+                        <input type="text" name="user_chatter">
+                        <input type="text" name="r" value="${iidd}" hidden>
+                        <input type="text" name="rtarget" value="${iidd}" hidden>
+                        <button class="btn btn-sm btn-primary" type="submit">reply</button>
+                    </form>
+                </div>
             </div>
         </div>
             `

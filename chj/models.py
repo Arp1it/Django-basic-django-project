@@ -12,3 +12,18 @@ class Chatting(models.Model):
 
     def __str__(self):
         return self.cuser.username
+
+        
+
+from django.contrib.auth import get_user_model
+
+def get_user_from_string(user_string):
+    User = get_user_model()
+    
+    try:
+        user = User.objects.get(username=user_string)  # Assuming the string is the username
+    except User.DoesNotExist:
+        # Handle the case where the user doesn't exist
+        user = None
+    
+    return user
