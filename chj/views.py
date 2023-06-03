@@ -9,13 +9,13 @@ from django.contrib.auth.models import User
 def home(request):
     chsud = Chatting.objects.order_by("timestamp")
     lusch = Chatting.objects.last()
-    print(lusch)
+    # print(lusch)
     # room_name = ""
     # return render(request, "chat.html", {"userschat": chsud, "lchsd": lusch, "room_name": room_name})
-    user = get_user_from_string(lusch)
+    # user = get_user_from_string(lusch)
 
-    ll = Chatting.objects.filter(cuser=user).last().id
-    print(ll)
+    # ll = Chatting.objects.filter(cuser=user).last().id
+    # print(ll)
 
     userr = request.user
     return render(request, "chat.html", {"userschat": chsud, "lchsd": lusch, "main_user":userr})

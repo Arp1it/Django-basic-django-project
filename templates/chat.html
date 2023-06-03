@@ -183,7 +183,7 @@
                 <button class="btn btn-primary btn-sm" id="button" onclick="t(${iidd})">
                     Reply
                 </button>
-                <div id="d{{forloop.counter}}" hidden class="my-1 sh">
+                <div id="d${iidd}" hidden class="my-1 sh">
                     <form action="/chatt/" method="post">{% csrf_token %}
                         <input type="text" name="user_chatter">
                         <input type="text" name="r" value="${iidd}" hidden>
