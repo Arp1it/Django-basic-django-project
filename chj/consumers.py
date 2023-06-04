@@ -39,6 +39,9 @@ class ChatConsumer(WebsocketConsumer):
         print(data)
 
         userch = data.get("message")
+        reus = data.get("remessage")
+        reus = reus.replace(str(data.get("cc")), "")
+        # print(reus)
         userr = User.objects.all()
         user = get_user_from_string(data.get("sender"))
 
@@ -46,7 +49,7 @@ class ChatConsumer(WebsocketConsumer):
         usretarg = data.get("rtarget")
 
 
-        if not userch:
+        if not userch and not reus:
             return userch
 
         if not userre or not usretarg:
@@ -55,10 +58,10 @@ class ChatConsumer(WebsocketConsumer):
 
         else:
             parrent = Chatting.objects.get(id=userre)
-            chsu = Chatting(cuser=user, chattts=userch, cusrep=parrent, useridhtml=usretarg)
+            chsu = Chatting(cuser=user, chattts=reus, cusrep=parrent, useridhtml=usretarg)
             chsu.save()
         
-        payload = {"message": data.get("message"), "sender": data.get("sender"), "r": data.get("rr"), "rtarget": data.get("rtargett")}
+        payload = {"message": data.get("message"), "sender": data.get("sender"), "r": userre, "rtarget": usretarg, "reus":reus}
         print(payload)
 
         async_to_sync(self.channel_layer.group_send)(

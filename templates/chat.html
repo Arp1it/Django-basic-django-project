@@ -39,12 +39,12 @@
                     Reply
                 </button>
                 <div id="d{{n.id}}" hidden class="my-1 sh">
-                    <form action="/chatt/" method="post">{% csrf_token %}
-                        <input type="text" name="user_chatter">
-                        <input type="text" name="r" value="{{n.id}}" hidden>
-                        <input type="text" name="rtarget" value="{{n.id}}" hidden>
-                        <button class="btn btn-sm btn-primary" type="submit">reply</button>
-                    </form>
+                    <!-- <form action="/chatt/" method="post">{% csrf_token %} -->
+                        <input type="text" name="user_chatter" id="remessagee{{n.id}}">
+                        <input type="text" name="r" value="{{n.id}}" id="rtarget" hidden>
+                        <input type="text" name="rtarget" value="{{n.id}}" id="rtarget" hidden>
+                        <button class="btn btn-sm btn-primary" type="submit" onclick="sendMessage()">reply</button>
+                    <!-- </form> -->
                 </div>
 
             </div>
@@ -96,10 +96,13 @@
     //         //     alert("data");
     //         // }
     //     });
-    // });     
+    // });  
+    
+    let c;
 
     const t = (counter) => {
         document.getElementById(`d${counter}`).toggleAttribute("hidden");
+        c = counter;
     }
 
 
@@ -120,8 +123,8 @@
         let daata = JSON.parse(e.data)
         console.log(daata)
 
-        if (daata.payload.message){
-            updateUI(daata.payload.message, daata.payload.sender, daata.ll)
+        if (daata.payload.message || daata.payload.reus){
+            updateUI(daata.payload.message, daata.payload.sender, daata.ll, daata.payload.reus, daata.payload.r)
         }
     }
 
@@ -129,7 +132,7 @@
         console.log("disconnected")
     }
 
-    function updateUI(message, sender, iidd){
+    function updateUI(message, sender, iidd, repl, replid){
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
         let a = new Date()
@@ -146,12 +149,21 @@
 
         k = `${e} ${f}, ${d}, ${b}:${c} ${amPm}`
 
+        let rplyoff = ""
+
+        if(repl){
+            message = repl
+            rplyoff = `reply of ${rplyoff} <a href=#ld${replid}>${sender}</a>`
+            // replid += 1
+        }
+
         if(sender == "{{main_user}}"){
         var html = `
         <div class="card mb-5" style="width: 33rem; margin-left: 570px;">
             <div class="card-body">
                 <h5 class="card-title" id="ld${iidd}">${sender}</h5>
                 <h5 class="card-title" id="chat">{{username}}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">${rplyoff}</h6>
                 <h6 class="card-subtitle mb-2 text-muted">${k} <b>(You)</b></h6>
                 <p class="card-text">${message}</p>
 
@@ -159,12 +171,10 @@
                     Reply
                 </button>
                 <div id="d${iidd}" hidden class="my-1 sh">
-                    <form action="/chatt/" method="post">{% csrf_token %}
-                        <input type="text" name="user_chatter">
-                        <input type="text" name="r" value="${iidd}" hidden>
-                        <input type="text" name="rtarget" value="${iidd}" hidden>
-                        <button class="btn btn-sm btn-primary" type="submit">reply</button>
-                    </form>
+                        <input type="text" name="user_chatter" id="remessagee${iidd}}">
+                        <input type="text" name="r" value="${iidd}" id="rtarget" hidden>
+                        <input type="text" name="rtarget" value="${iidd}" id="rtarget" hidden>
+                        <button class="btn btn-sm btn-primary" type="submit" onclick="sendMessage()">reply</button>
                 </div>
             </div>
         </div>
@@ -177,6 +187,7 @@
             <div class="card-body">
                 <h5 class="card-title" id="ld${iidd}">${sender}</h5>
                 <h5 class="card-title" id="chat">{{username}}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">${rplyoff}</h6>
                 <h6 class="card-subtitle mb-2 text-muted">${k}</h6>
                 <p class="card-text">${message}</p>
 
@@ -185,11 +196,9 @@
                 </button>
                 <div id="d${iidd}" hidden class="my-1 sh">
                     <form action="/chatt/" method="post">{% csrf_token %}
-                        <input type="text" name="user_chatter">
-                        <input type="text" name="r" value="${iidd}" hidden>
-                        <input type="text" name="rtarget" value="${iidd}" hidden>
-                        <button class="btn btn-sm btn-primary" type="submit">reply</button>
-                    </form>
+                        <input type="text" name="r" value="${iidd}" id="rtarget" hidden>
+                        <input type="text" name="rtarget" value="${iidd}" id="rtarget" hidden>
+                        <button class="btn btn-sm btn-primary" type="submit" onclick="sendMessage()">reply</button>
                 </div>
             </div>
         </div>
@@ -200,13 +209,23 @@
     }
 
     function sendMessage(){
-
+        let remessage;
         let message = document.getElementById("messagee").value
-        let rr = document.getElementsByName("r").value
-        let rtargett = document.getElementsByName("rtarget").value
+        if(message){
+            remessage = ""
+            c = ""
+        }
 
-        wbsocket.send(JSON.stringify({'message': message, "sender":sender, "r": rr, "rtarget": rtargett}))
+        else{
+            remessage = document.getElementById(`remessagee${c}`).value
+        }
+        // let rr = document.getElementById("r").value
+        // let rtargett = document.getElementById("rtarget").value
+
+        wbsocket.send(JSON.stringify({'message': message, "sender":sender, "r": c, "rtarget": c, "remessage":remessage, "cc": c}))
         document.getElementById("messagee").value = ''
+        document.getElementById(`remessagee${c}`).value = ''
+        document.getElementById(`d${c}`).toggleAttribute("hidden");
     }
 
 
