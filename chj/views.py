@@ -8,17 +8,22 @@ from django.contrib.auth.models import User
 
 def home(request):
     chsud = Chatting.objects.order_by("timestamp")
+    fisch = Chatting.objects.first()
     lusch = Chatting.objects.last()
+    # print(fisch)
+    if fisch:
+        user = get_user_from_string(fisch)
+        ff = Chatting.objects.filter(cuser=user).first().id
+        print(ff)
+    else:
+        ff = 1
+    # print(ff)
     # print(lusch)
     # room_name = ""
     # return render(request, "chat.html", {"userschat": chsud, "lchsd": lusch, "room_name": room_name})
-    # user = get_user_from_string(lusch)
-
-    # ll = Chatting.objects.filter(cuser=user).last().id
-    # print(ll)
 
     userr = request.user
-    return render(request, "chat.html", {"userschat": chsud, "lchsd": lusch, "main_user":userr})
+    return render(request, "chat.html", {"userschat": chsud, "lchsd": lusch, "main_user":userr, "fisch": ff})
 
 def chatt(request):
     if request.method == "POST":

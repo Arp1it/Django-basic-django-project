@@ -4,7 +4,7 @@
 
 {% load mathfilters %}
 
-<p id="h">h</p>
+<p id="ld{{fisch|sub:1}}">h</p>
 
 <!-- <div class="container my-5" id="chat" hx-swap-oob="beforeend"> -->
 <div class="container my-5">
@@ -26,11 +26,8 @@
                 </h6>
                 {% if n.cusrep %}
                 <h6 class="card-subtitle mb-2 text-muted">reply of
-                <a {% if n.useridhtml == "1" %}
-                    href="#h"
-                {% else %}
-                    href="#ld{{n.useridhtml|sub:1}}"
-                {% endif %} >{{n.cusrep}}</a></h6>
+                <a href="#ld{{n.useridhtml|sub:1}}" >{{n.cusrep}}</a></h6>
+                <!-- <a href="#ld{{n.useridhtml}}">{{n.cusrep}}</a></h6> -->
 
                 {% endif %}
                 <p class="card-text">{{n.chattts}}</p>
@@ -111,6 +108,8 @@
     let url = "ws://localhost:8000/ws/"
     let sender = "{{main_user}}"
 
+    let op = "{{fisch}}"
+
     let wbsocket = new WebSocket(url)
 
     wbsocket.onopen = function(e){
@@ -153,8 +152,15 @@
 
         if(repl){
             message = repl
-            rplyoff = `reply of ${rplyoff} <a href=#ld${replid}>${sender}</a>`
-            // replid += 1
+            // replid -= 1
+            if(replid == Number.parseInt(op)-1){
+                replid = Number.parseInt(op)-1
+                rplyoff = `reply of ${rplyoff} <a href=#ld${replid}>${sender}</a>`
+            }
+            else{
+                replid = Number.parseInt(replid)-1
+                rplyoff = `reply of ${rplyoff} <a href=#ld${replid}>${sender}</a>`
+            }
         }
 
         if(sender == "{{main_user}}"){
@@ -171,7 +177,7 @@
                     Reply
                 </button>
                 <div id="d${iidd}" hidden class="my-1 sh">
-                        <input type="text" name="user_chatter" id="remessagee${iidd}}">
+                        <input type="text" name="user_chatter" id="remessagee${iidd}">
                         <input type="text" name="r" value="${iidd}" id="rtarget" hidden>
                         <input type="text" name="rtarget" value="${iidd}" id="rtarget" hidden>
                         <button class="btn btn-sm btn-primary" type="submit" onclick="sendMessage()">reply</button>
@@ -195,7 +201,7 @@
                     Reply
                 </button>
                 <div id="d${iidd}" hidden class="my-1 sh">
-                    <form action="/chatt/" method="post">{% csrf_token %}
+                        <input type="text" name="user_chatter" id="remessagee${iidd}">
                         <input type="text" name="r" value="${iidd}" id="rtarget" hidden>
                         <input type="text" name="rtarget" value="${iidd}" id="rtarget" hidden>
                         <button class="btn btn-sm btn-primary" type="submit" onclick="sendMessage()">reply</button>
