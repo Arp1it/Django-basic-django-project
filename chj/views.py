@@ -25,27 +25,27 @@ def home(request):
     userr = request.user
     return render(request, "chat.html", {"userschat": chsud, "lchsd": lusch, "main_user":userr, "fisch": ff})
 
-def chatt(request):
-    if request.method == "POST":
-        user = request.user
-        userch = request.POST.get("user_chatter")
-        userre = request.POST["r"]
-        usretarg = request.POST.get("rtarget")
-        # print(usretarg, userre)
+# def chatt(request):
+#     if request.method == "POST":
+#         user = request.user
+#         userch = request.POST.get("user_chatter")
+#         userre = request.POST["r"]
+#         usretarg = request.POST.get("rtarget")
+#         # print(usretarg, userre)
 
-        if not userch:
-            return redirect("/")
+#         if not userch:
+#             return redirect("/")
 
-        if not userre or not usretarg:
-            chsu = Chatting(cuser=user, chattts=userch)
-            chsu.save()
+#         if not userre or not usretarg:
+#             chsu = Chatting(cuser=user, chattts=userch)
+#             chsu.save()
 
-        else:
-            parrent = Chatting.objects.get(id=userre)
-            chsu = Chatting(cuser=user, chattts=userch, cusrep=parrent, useridhtml=usretarg)
-            chsu.save()
+#         else:
+#             parrent = Chatting.objects.get(id=userre)
+#             chsu = Chatting(cuser=user, chattts=userch, cusrep=parrent, useridhtml=usretarg)
+#             chsu.save()
 
-    return redirect("/")
+#     return redirect("/")
 
 def user_signin(request):
     if request.method == "POST":
