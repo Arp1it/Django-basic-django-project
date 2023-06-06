@@ -120,7 +120,7 @@
         console.log(daata)
 
         if (daata.payload.message || daata.payload.reus){
-            updateUI(daata.payload.message, daata.payload.sender, daata.ll, daata.payload.reus, daata.payload.r)
+            updateUI(daata.payload.message, daata.payload.sender, daata.ll, daata.payload.reus, daata.payload.r, daata.fir, daata.payload.name)
         }
     }
 
@@ -128,7 +128,16 @@
         console.log("disconnected")
     }
 
-    function updateUI(message, sender, iidd, repl, replid){
+    function updateUI(message, sender, iidd, repl, replid, firs, name){
+
+        try{
+        element = document.getElementById("ld0")
+        element.id = `ld${firs-1}`
+        }
+        catch(error){
+            console.log("l")
+        }
+
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
         let a = new Date()
@@ -152,11 +161,11 @@
             // replid -= 1
             if(replid == Number.parseInt(op)-1){
                 replid = Number.parseInt(op)-1
-                rplyoff = `reply of ${rplyoff} <a href=#ld${replid}>${sender}</a>`
+                rplyoff = `reply of ${rplyoff} <a href=#ld${replid}>${name}</a>`
             }
             else{
                 replid = Number.parseInt(replid)-1
-                rplyoff = `reply of ${rplyoff} <a href=#ld${replid}>${sender}</a>`
+                rplyoff = `reply of ${rplyoff} <a href=#ld${replid}>${name}</a>`
             }
         }
 
@@ -229,8 +238,10 @@
 
         wbsocket.send(JSON.stringify({'message': message, "sender":sender, "r": c, "rtarget": c, "remessage":remessage, "cc": c}))
         document.getElementById("messagee").value = ''
+        if(remessage != ""){
         document.getElementById(`remessagee${c}`).value = ''
         document.getElementById(`d${c}`).toggleAttribute("hidden");
+        }
     }
 
 

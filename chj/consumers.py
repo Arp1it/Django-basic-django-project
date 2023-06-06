@@ -48,6 +48,8 @@ class ChatConsumer(WebsocketConsumer):
         userre = data.get("r")
         usretarg = data.get("rtarget")
 
+        name = ""
+
 
         if not userch and not reus:
             return userch
@@ -60,8 +62,13 @@ class ChatConsumer(WebsocketConsumer):
             parrent = Chatting.objects.get(id=userre)
             chsu = Chatting(cuser=user, chattts=reus, cusrep=parrent, useridhtml=usretarg)
             chsu.save()
+            name = Chatting.objects.filter(useridhtml=usretarg).first().cusrep
+
+        name = str(name)
+        print(name)
+
         
-        payload = {"message": data.get("message"), "sender": data.get("sender"), "r": userre, "rtarget": usretarg, "reus":reus}
+        payload = {"message": data.get("message"), "sender": data.get("sender"), "r": userre, "rtarget": usretarg, "reus":reus, "name":name}
         print(payload)
 
         async_to_sync(self.channel_layer.group_send)(
@@ -79,9 +86,11 @@ class ChatConsumer(WebsocketConsumer):
         usert = get_user_from_string(lusch)
 
         ll = Chatting.objects.filter(cuser=usert).last().id
+        fir = Chatting.objects.first().id
+        print(fir)
         # print(type(ll))      
 
-        self.send(text_data = json.dumps({"payload": dataa, "ll": ll}))
+        self.send(text_data = json.dumps({"payload": dataa, "ll": ll, "fir":fir}))
 
     # def user_joined(self, event):
     #     html = get_template("templates/chat.html").render(

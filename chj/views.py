@@ -81,3 +81,10 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect("/")
+
+# def delte(request, id):
+#     d = Chatting.objects.all().filter(id=id)
+#     d.delete()
+#     # l = ff = Chatting.objects.last().id
+#     return redirect("/")
+#     # return redirect(f"/#{l}")
