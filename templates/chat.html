@@ -34,9 +34,11 @@
                 <button class="btn btn-primary btn-sm" id="button" onclick="t({{n.id}})">
                     Reply
                 </button>
-                <button class="btn btn-danger btn-sm" id="del{{n.id}}" onclick="mn(this.id)">
-                    Delete
-                </button>
+                {% if request.user.username == n.cuser.username %}
+                    <button class="btn btn-danger btn-sm" id="del{{n.id}}" onclick="mn(this.id)">
+                        Delete
+                    </button>
+                {% endif %}
                 <div id="d{{n.id}}" hidden class="my-1 sh">
                     <!-- <form action="/chatt/" method="post">{% csrf_token %} -->
                         <input type="text" name="user_chatter" id="remessagee{{n.id}}">
@@ -212,9 +214,6 @@
                 <button class="btn btn-primary btn-sm" id="button" onclick="t(${iidd})">
                     Reply
                 </button>
-                <button class="btn btn-danger btn-sm" id="del${iidd}" onclick="mn(this.id)">
-                    Delete
-                </button>
                 <div id="d${iidd}" hidden class="my-1 sh">
                         <input type="text" name="user_chatter" id="remessagee${iidd}">
                         <input type="text" name="r" value="${iidd}" id="rtarget" hidden>
@@ -266,7 +265,9 @@
         try{
             v = v.replace(/del/g, "")
             console.log(v)
-            document.getElementById(`card${v}`).remove()
+            let el = document.getElementById(`card${v}`)
+            console.log(el.length)
+            el.remove()
         }
         catch(err){
             console.log(err)

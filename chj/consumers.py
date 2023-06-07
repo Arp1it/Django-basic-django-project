@@ -118,3 +118,4 @@ class ChatConsumer(WebsocketConsumer):
 
         dl = Chatting.objects.filter(id=v)
         dl.delete()
+        self.send(text_data = json.dumps({"v":v}))
