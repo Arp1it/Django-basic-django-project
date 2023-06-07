@@ -36,50 +36,62 @@ class ChatConsumer(WebsocketConsumer):
         # print(text_data)
         # self.send(text_data=json.dumps(text_data))
         data = json.loads(text_data)
-        print(data)
+        # print(data)
+        
+        v = data.get("v")
 
-        userch = data.get("message")
-        reus = data.get("remessage")
-        reus = reus.replace(str(data.get("cc")), "")
-        # print(reus)
-        userr = User.objects.all()
-        user = get_user_from_string(data.get("sender"))
+        if v:
+            payload = {"v":v}
+            print(payload)
 
-        userre = data.get("r")
-        usretarg = data.get("rtarget")
-
-        name = ""
-
-
-        if not userch and not reus:
-            return userch
-
-        if not userre or not usretarg:
-            chsu = Chatting(cuser=user, chattts=userch)
-            chsu.save()
+            async_to_sync(self.channel_layer.group_send)(
+                f"{self.GROUP_NAME}", {
+                    "type": "del_message",
+                    'value': json.dumps(payload)
+                }
+            )
 
         else:
-            parrent = Chatting.objects.get(id=userre)
-            chsu = Chatting(cuser=user, chattts=reus, cusrep=parrent, useridhtml=usretarg)
-            chsu.save()
-            name = Chatting.objects.filter(useridhtml=usretarg).first().cusrep
+            userch = data.get("message")
+            reus = data.get("remessage")
+            reus = reus.replace(str(data.get("cc")), "")
+            # print(reus)
+            userr = User.objects.all()
+            user = get_user_from_string(data.get("sender"))
 
-        name = str(name)
-        print(name)
+            userre = data.get("r")
+            usretarg = data.get("rtarget")
 
-        
-        payload = {"message": data.get("message"), "sender": data.get("sender"), "r": userre, "rtarget": usretarg, "reus":reus, "name":name}
-        print(payload)
+            name = ""
 
-        async_to_sync(self.channel_layer.group_send)(
-            f"{self.GROUP_NAME}", {
-                "type": "send_message",
-                'value': json.dumps(payload)
-            }
-        )
+            if not userch and not reus:
+                return userch
+
+            if not userre or not usretarg:
+                chsu = Chatting(cuser=user, chattts=userch)
+                chsu.save()
+
+            else:
+                parrent = Chatting.objects.get(id=userre)
+                # print(parrent, type(parrent))
+                chsu = Chatting(cuser=user, chattts=reus, cusrep=parrent, useridhtml=usretarg)
+                chsu.save()
+                name = Chatting.objects.filter(useridhtml=usretarg).first().cusrep
+
+            name = str(name)
+            print(name)
+            payload = {"message": data.get("message"), "sender": data.get("sender"), "r": userre, "rtarget": usretarg, "reus":reus, "name":name}
+            print(payload)
+
+            async_to_sync(self.channel_layer.group_send)(
+                f"{self.GROUP_NAME}", {
+                    "type": "send_message",
+                    'values': json.dumps(payload)
+                }
+            )
 
     def send_message(self, text_data):
-        dataa = json.loads(text_data.get("value"))
+        dataa = json.loads(text_data.get("values"))
         # print(dataa.get("r"))  
 
         lusch = Chatting.objects.last()
@@ -87,7 +99,7 @@ class ChatConsumer(WebsocketConsumer):
 
         ll = Chatting.objects.filter(cuser=usert).last().id
         fir = Chatting.objects.first().id
-        print(fir)
+        # print(fir)
         # print(type(ll))      
 
         self.send(text_data = json.dumps({"payload": dataa, "ll": ll, "fir":fir}))
@@ -98,3 +110,11 @@ class ChatConsumer(WebsocketConsumer):
     #     )
     #     print(html)
     #     self.send(text_data=html)
+
+    def del_message(self, text_dataa):
+        data = json.loads(text_dataa.get("value"))
+        v = data.get("v")
+        v = int(v.replace("del", ""))
+
+        dl = Chatting.objects.filter(id=v)
+        dl.delete()

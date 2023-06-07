@@ -10,10 +10,10 @@
 <div class="container my-5">
     {% for n in userschat %}
     {% if request.user.username == n.cuser.username %}
-    <div class="card mb-5" id="chat-log" style="width: 33rem; margin-left: 570px;">
+    <div class="card mb-5" id="card{{n.id}}" style="width: 33rem; margin-left: 570px;">
 
         {% else %}
-        <div class="card mb-5" style="width: 33rem; margin-left: 10px;">
+        <div class="card mb-5" id="card{{n.id}}" style="width: 33rem; margin-left: 10px;">
 
             {% endif %}
             <div class="card-body" id="{{n.cuser.username}}">
@@ -33,6 +33,9 @@
 
                 <button class="btn btn-primary btn-sm" id="button" onclick="t({{n.id}})">
                     Reply
+                </button>
+                <button class="btn btn-danger btn-sm" id="del{{n.id}}" onclick="mn(this.id)">
+                    Delete
                 </button>
                 <div id="d{{n.id}}" hidden class="my-1 sh">
                     <!-- <form action="/chatt/" method="post">{% csrf_token %} -->
@@ -171,7 +174,7 @@
 
         if(sender == "{{main_user}}"){
         var html = `
-        <div class="card mb-5" style="width: 33rem; margin-left: 570px;">
+        <div class="card mb-5" id="card${iidd}" style="width: 33rem; margin-left: 570px;">
             <div class="card-body">
                 <h5 class="card-title" id="ld${iidd}">${sender}</h5>
                 <h5 class="card-title" id="chat">{{username}}</h5>
@@ -181,6 +184,9 @@
 
                 <button class="btn btn-primary btn-sm" id="button" onclick="t(${iidd})">
                     Reply
+                </button>
+                <button class="btn btn-danger btn-sm" id="del${iidd}" onclick="mn(this.id)">
+                    Delete
                 </button>
                 <div id="d${iidd}" hidden class="my-1 sh">
                         <input type="text" name="user_chatter" id="remessagee${iidd}">
@@ -195,7 +201,7 @@
 
         else{
             var html = `
-        <div class="card mb-5" style="width: 33rem; margin-left: 10px;">
+        <div class="card mb-5" id="card${iidd}" style="width: 33rem; margin-left: 10px;">
             <div class="card-body">
                 <h5 class="card-title" id="ld${iidd}">${sender}</h5>
                 <h5 class="card-title" id="chat">{{username}}</h5>
@@ -205,6 +211,9 @@
 
                 <button class="btn btn-primary btn-sm" id="button" onclick="t(${iidd})">
                     Reply
+                </button>
+                <button class="btn btn-danger btn-sm" id="del${iidd}" onclick="mn(this.id)">
+                    Delete
                 </button>
                 <div id="d${iidd}" hidden class="my-1 sh">
                         <input type="text" name="user_chatter" id="remessagee${iidd}">
@@ -231,7 +240,12 @@
         }
 
         else{
+            try{
             remessage = document.getElementById(`remessagee${c}`).value
+            }
+            catch(error){
+                remessage = ""
+            }
         }
         // let rr = document.getElementById("r").value
         // let rtargett = document.getElementById("rtarget").value
@@ -241,6 +255,21 @@
         if(remessage != ""){
         document.getElementById(`remessagee${c}`).value = ''
         document.getElementById(`d${c}`).toggleAttribute("hidden");
+        }
+    }
+
+    const mn = (ii) => {
+        let v = ii;
+
+        wbsocket.send(JSON.stringify({"v": v}))
+        
+        try{
+            v = v.replace(/del/g, "")
+            console.log(v)
+            document.getElementById(`card${v}`).remove()
+        }
+        catch(err){
+            console.log(err)
         }
     }
 
