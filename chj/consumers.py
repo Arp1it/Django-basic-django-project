@@ -41,6 +41,7 @@ class ChatConsumer(WebsocketConsumer):
         v = data.get("v")
 
         if v:
+            v = v.replace("del", "")
             payload = {"v":v}
             print(payload)
 
@@ -113,9 +114,9 @@ class ChatConsumer(WebsocketConsumer):
 
     def del_message(self, text_dataa):
         data = json.loads(text_dataa.get("value"))
-        v = data.get("v")
-        v = int(v.replace("del", ""))
+        v = int(data.get("v"))
+        print(v)
 
         dl = Chatting.objects.filter(id=v)
         dl.delete()
-        self.send(text_data = json.dumps({"v":v}))
+        self.send(text_data = json.dumps({"del":data}))

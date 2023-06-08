@@ -122,10 +122,25 @@
         console.log(e.data)
 
         let daata = JSON.parse(e.data)
-        console.log(daata)
-
-        if (daata.payload.message || daata.payload.reus){
+        // console.log(daata)
+        
+        if (daata.payload && (daata.payload.message || daata.payload.reus)){
             updateUI(daata.payload.message, daata.payload.sender, daata.ll, daata.payload.reus, daata.payload.r, daata.fir, daata.payload.name)
+        }
+
+        if (daata.del && (daata.del.v)){
+            deleteMessageFromUI(daata.del.v)
+        }
+    }
+
+    function deleteMessageFromUI(messageId) {
+        // console.log(messageId, "iwdbibioqboibb")
+        const messageElement = document.getElementById(`card${messageId}`);
+        // console.log(messageElement, "iwdbibioqboibb")
+
+        if (messageElement) {
+            // Remove the message element from the UI
+            messageElement.remove();
         }
     }
 
@@ -261,17 +276,10 @@
         let v = ii;
 
         wbsocket.send(JSON.stringify({"v": v}))
-        
-        try{
-            v = v.replace(/del/g, "")
-            console.log(v)
-            let el = document.getElementById(`card${v}`)
-            console.log(el.length)
-            el.remove()
-        }
-        catch(err){
-            console.log(err)
-        }
+
+        // v = v.replace(/del/g, "")
+        // console.log(v)
+        // let el = document.getElementById(`card${v}`).remove()
     }
 
 
